@@ -1,190 +1,177 @@
 ---
 marp: true
-title: Cybersecurity with Python Tools
+title: Python Web Development Journey
 theme: gaia
 paginate: true
 ---
 
-# Cybersecurity with Python Tools
+# Python Web Development Journey
+## From Static Sites to Dynamic Applications
 
-- [octaflop/cyberpython](https://github.com/octaflop/cyberpython)
-- ![](./cyberpython_github_repo_qr.png) 
-
----
-
-
-# Introduction 🔰
-
-<!-- eta: 3min -->
-
-- Importance of cybersecurity
-- Why Python is popular for cybersecurity
-<!-- joke: "Why did the hacker cross the road? Because that's where the security was weakest!" -->
+- A 3-act workshop exploring web development with Python
+- ![](./workshop_qr.png)
 
 ---
 
-# Python Basics for Cybersecurity 🐍
+# Act 1: Getting Started with Web Basics 🌐
 
+<!-- eta: 15min -->
 
-<!-- eta: 5min -->
+## Understanding Static Web Hosting
 
-- Key Python libraries: `requests`, `socket`, `scrapy`, `cryptography`
-- Setting up a Python environment
-- `python3.12 -m venv venv && source venv/bin/activate`
-- 
-<!-- tip: "Think of virtual environments as your personal cybersecurity lab coats." -->
+- Basic HTML/CSS structure
+- Python's `http.server` for local development
+- Deploying static sites
 
 ---
 
-# Network Security Tools 🛜
-
-<!-- eta: 8min -->
-
-## Port Scanning with Python
+# Your First Python Web Server 🚀
 
 ```python
-import socket
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-def scan_ports(host):
-    for port in range(1, 1025):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        result = sock.connect_ex((host, port))
-        if result == 0:
-            print(f"Port {port}: Open")
-        sock.close()
+def run_server(port=8000):
+    server_address = ('', port)
+    httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+    print(f"Serving at port {port}")
+    httpd.serve_forever()
 
-scan_ports('127.0.0.1')
-```
-
-<!-- Joke: "Port scanning is like knocking on doors to see if anyone's home... but less creepy." -->
-
----
-
-## Implementing a Simple Packet Sniffer
-
-- Use scapy to capture and analyze network packets.
-- Reference: [GitHub repository](https://github.com/hposton/python-for-cybersecurity/blob/840769d04d2228803fd7493cdaf52c348b5db775/Part_8/8.2_Network_Sniffing/NetworkCredentialSniffing.py#L4) for Python cybersecurity scripts
-
----
-
-
-# Web Application Security 🌐
-
-<!-- eta: 8min -->
-
-* Web scraping with beautifulsoup, scrapy, scrapyd; etc
-* SQL injection detection: sqlmap
-* XSS vuln scanner
-
----
-
-
-# Cryptography in Python 🔐
-
-<!-- eta: 8min -->
-
-## Encryption and Decryption using PyCrypto
-
-```python
-from Crypto.Cipher import AES
-import base64
-
-def encrypt_message(key, message):
-    cipher = AES.new(key, AES.MODE_EAX)
-    nonce = cipher.nonce
-    ciphertext, tag = cipher.encrypt_and_digest(message.encode('utf-8'))
-    return base64.b64encode(nonce + ciphertext).decode('utf-8')
-
-key = b'Sixteen byte key'
-message = "Secret Message"
-print(encrypt_message(key, message))
-
+if __name__ == '__main__':
+    run_server()
 ```
 
 ---
 
-# Demo 🎡 
+# Act 2: Enter FastAPI ⚡
 
-<!-- eta: 14min -->
+<!-- eta: 20min -->
 
-## Encrypting and decrypting with python
+## Moving to Modern Web Frameworks
+
+- Introduction to FastAPI
+- RESTful API concepts
+- Request/Response cycle
+- Path operations and routing
+
+---
+
+# Basic FastAPI Application
 
 ```python
-import hashlib
-import socket
-from cryptography.fernet import Fernet
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-def hash_password(password):
-    # Hash a password using SHA-256
-    hashed = hashlib.sha256(password.encode()).hexdigest()
-    print(f"Hashed Password: {hashed}")
+app = FastAPI()
 
-def check_open_ports(host, ports):
-    # Check if specified ports are open on the given host
-    open_ports = []
-    for port in ports:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(1)
-            result = s.connect_ex((host, port))
-            if result == 0:
-                open_ports.append(port)
-    print(f"Open Ports on {host}: {open_ports}")
+class User(BaseModel):
+    username: str
+    email: str
 
-def encrypt_decrypt_message(message):
-    # Generate a key for encryption
-    key = Fernet.generate_key()
-    cipher_suite = Fernet(key)
-    
-    # Encrypt the message
-    encrypted_message = cipher_suite.encrypt(message.encode())
-    print(f"Encrypted Message: {encrypted_message}")
-    
-    # Decrypt the message
-    decrypted_message = cipher_suite.decrypt(encrypted_message).decode()
-    print(f"Decrypted Message: {decrypted_message}")
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
-def main():
-    # Demonstrate password hashing
-    password = "securepassword123"
-    hash_password(password)
-    
-    # Demonstrate checking open ports
-    host = "localhost"
-    ports = [22, 80, 443, 8080]
-    check_open_ports(host, ports)
-    
-    # Demonstrate encryption and decryption
-    message = "Hello, Cybersecurity!"
-    encrypt_decrypt_message(message)
-
-if __name__ == "__main__":
-    main()
+@app.post("/users/")
+def create_user(user: User):
+    return user
 ```
 
 ---
 
-# Resources
+# Understanding Templates 📝
 
-## Long-Form Resources for Further Learning
+<!-- eta: 15min -->
 
-- [Black Hat Python](https://nostarch.com/black-hat-python2E) 💰
-- [Violent Python](https://github.com/tanc7/hacking-books/blob/master/Violent%20Python%20-%20A%20Cookbook%20for%20Hackers,%20Forensic%20Analysts,%20Penetration%20Testers%20and%20Security%20Engineers.pdf) 📖
+## Why Templates Matter
 
-
----
-
-## GitHub repositories for further exploration
-
-- [PeterMosmans/security-scripts](https://github.com/PeterMosmans/security-scripts)
-
-
-<!-- Joke: "Remember, in cybersecurity, the only thing more important than Python is coffee!" -->
+- Separation of concerns
+- Dynamic content generation
+- Template syntax basics
+- Introduction to Jinja2
 
 ---
 
-## This Repo:
+# Act 3: Building Dynamic Applications 🎭
 
+<!-- eta: 25min -->
 
-- [octaflop/cyberpython](https://github.com/octaflop/cyberpython)
-- ![](./cyberpython_github_repo_qr.png)
+## The Power of Jinja2 with FastAPI
+
+- Template inheritance
+- Dynamic data rendering
+- HTMX integration
+- Real-world patterns
+
+---
+
+# Demo: Jinja2 Templates in Action
+
+```python
+from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
+from fasthx import Jinja
+
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+jinja = Jinja(templates)
+
+@app.get("/")
+@jinja.page("index.html")
+def index():
+    return {"message": "Welcome!"}
+```
+
+---
+
+# Building Our User List App 📋
+
+```python
+@app.get("/user-list")
+@jinja.hx("user-list.html")
+def htmx_or_data(response: Response) -> tuple[User, ...]:
+    return (
+        User(first_name="Alice", last_name="Johnson"),
+        User(first_name="Bob", last_name="Smith"),
+    )
+```
+
+---
+
+# Template Structure
+
+```html
+{% extends 'base.html' %}
+{% block content %}
+    {% for user in items %}
+        {{ user.first_name }} {{ user.last_name }}
+    {% endfor %}
+{% endblock %}
+```
+
+---
+
+# Best Practices & Next Steps 🎯
+
+- Structure matters: Keep templates organized
+- Use template inheritance effectively
+- Implement proper error handling
+- Consider caching strategies
+- Explore HTMX for enhanced interactivity
+
+---
+
+# Resources 📚
+
+## Learning Materials
+
+- FastAPI Documentation: [fastapi.tiangolo.com](https://fastapi.tiangolo.com)
+- Jinja2 Documentation: [jinja.palletsprojects.com](https://jinja.palletsprojects.com)
+- HTMX: [htmx.org](https://htmx.org)
+
+---
+
+# Workshop Repository
+
+- [Your Repository Link]
+- Contains all examples and additional resources
+- ![](./repo_qr.png)
